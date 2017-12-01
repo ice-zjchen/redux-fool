@@ -3,13 +3,13 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
-import { createAction as createReduxAction } from 'redux-actions';
+import { createAction } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
 export const defineActionType = app => module => type => `${app}/${module}/${type}`;
 
 export const makeActionCreator = (actionType, payload) => (
-  createReduxAction(
+  createAction(
     actionType,
     payload ? () => payload : updates => updates,
     () => ({ async: false }),
@@ -17,7 +17,7 @@ export const makeActionCreator = (actionType, payload) => (
 );
 
 export const makeAsyncActionCreator = (actionType, callAPI) => (
-  createReduxAction(
+  createAction(
     actionType,
     payload => payload,
     () => ({ async: true, callAPI}),
@@ -25,7 +25,7 @@ export const makeAsyncActionCreator = (actionType, callAPI) => (
 );
 
 export const createAsyncActonReducers = (actionType, successHandler = null, failureHanlder = null) => {
-  if (!actionType) {
+  if (!actionType || _.isString(actionType)) {
     throw new Error('`actionType` is reqired string type for createAsyncActonReducers');
   }
 
