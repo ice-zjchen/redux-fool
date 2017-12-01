@@ -45,7 +45,7 @@ test('`makeAsyncActionCreator` is ok', (t) => {
     payload,
     meta: {
       async: true,
-      callAPI
+      callAPI,
     },
   };
 
@@ -69,7 +69,7 @@ test('`createAsyncActonReducers` default handlers is ok', (t) => {
   const expect = [
     `${actionType}_${REQUEST}`,
     `${actionType}_${SUCCESS}`,
-    `${actionType}_${FAILURE}`
+    `${actionType}_${FAILURE}`,
   ];
   t.deepEqual(_.keys(reducers), expect);
 });
