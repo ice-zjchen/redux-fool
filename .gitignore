@@ -1,6 +1,10 @@
 # Setting
 .vscode/*
 
+# Output
+es
+lib
+
 # Logs
 logs
 *.log
