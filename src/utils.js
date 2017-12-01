@@ -20,7 +20,7 @@ export const makeAsyncActionCreator = (actionType, callAPI) => (
   createAction(
     actionType,
     payload => payload,
-    () => ({ async: true, callAPI}),
+    () => ({ async: true, callAPI }),
   )
 );
 
@@ -35,7 +35,7 @@ export const createAsyncActonReducers = (actionType, successHandler = null, fail
 
   return {
     [`${actionType}_${REQUEST}`]: requestReducer,
-    [`${actionType}_${SUCCESS}`]: successHandler ? successHandler : successReducer,
-    [`${actionType}_${FAILURE}`]: failureHanlder ? failureHanlder : failureReducer,
+    [`${actionType}_${SUCCESS}`]: successHandler || successReducer,
+    [`${actionType}_${FAILURE}`]: failureHanlder || failureReducer,
   };
 };
