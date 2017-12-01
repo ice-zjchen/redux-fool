@@ -25,7 +25,7 @@ export const makeAsyncActionCreator = (actionType, callAPI) => (
 );
 
 export const createAsyncActonReducers = (actionType, successHandler = null, failureHanlder = null) => {
-  if (!actionType || _.isString(actionType)) {
+  if (!actionType || !_.isString(actionType)) {
     throw new Error('`actionType` is reqired string type for createAsyncActonReducers');
   }
 
