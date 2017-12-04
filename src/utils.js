@@ -29,9 +29,23 @@ export const createAsyncActonReducers = (actionType, successHandler = null, fail
     throw new Error('`actionType` is reqired string type for createAsyncActonReducers');
   }
 
-  const requestReducer = (state, action) => state;
-  const successReducer = (state, action) => state;
-  const failureReducer = (state, action) => state;
+  const requestReducer = (state, action) => Object.assign({}, state, {
+    [actionType]: {
+      isPending: true
+    }
+  });
+  const successReducer = (state, action) => Object.assign({}, state, {
+    [actionType]: {
+      isPending: false,
+      result: action.payload
+    }
+  });
+  const failureReducer = (state, action) => Object.assign({}, state, {
+    [actionType]: {
+      isPending: false,
+      error: action.error
+    }
+  });
 
   return {
     [`${actionType}_${REQUEST}`]: requestReducer,
