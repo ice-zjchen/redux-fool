@@ -1,7 +1,37 @@
 # redux-fool
+It is a very simple tool, even fool, to creating a async action for redux. 
+
 ## Install
 ```
 npm install redux-tool --save
+```
+
+## How fool it is?
+By default, one action maps one object in state.
+
+```json
+{
+  "moduleName": {
+    "actionName": {
+      "isFetching": false,
+      "result": {},
+      "error": {}
+    }
+  }
+}
+```
+
+For example, In the ```task``` business module, If you create an api action named ``` CREATE_USER ```, the middleware will dispatch ``` CREATE_USER_REQUEST ```, ``` CREATE_USER_SUCCESS ``` or ``` CREATE_USER_FAILURE ```. Then default reducers update the ```createUser``` (camelCase of ```CREATE_USER```) in state.
+```json
+{
+  "task": {
+    "createTask": {
+      "isFetching": false,
+      "result": {},
+      "error": {}
+    }
+  }
+}
 ```
 
 ## Quick Start
@@ -67,4 +97,18 @@ const initialState = {};
 
 export default handleActions(reducers, initialState);
 ```
+## Advanced Usage
+Of course, you can handle success action or failure action yourself. It's also allow you to operate any state object limited in ```MODULE``` scope, such as ```state.task.entities```.
+##### reducers.js
+```javascript
+import { handleActions } from 'redux-actions';
+import * as actionTypes from './actionTypes';
 
+const successHandler = (state, action) => {...};
+const failureHandler = (state, action) => {...};
+const reducers = {
+  ...createApiReducers(actionTypes.CREATE_TASK, successHandler, failureHandler),
+};
+const initialState = {};
+
+export default handleActions(reducers, initialState);
