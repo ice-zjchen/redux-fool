@@ -48,10 +48,10 @@ import { middlewares as reduxFoolMiddlwares } from 'redux-fool';
 
 import reducers from './reducers';
 
-const apiMiddleware = reduxFoolMiddlwares.api;
+const callAPIMiddleware = reduxFoolMiddlwares.callAPIMiddleware;
 
 export default (initialState) => {
-  const applyMiddlewareFunc = applyMiddleware(thunk, apiMiddleware);
+  const applyMiddlewareFunc = applyMiddleware(thunk, callAPIMiddleware);
 
   const store = createStore(
     reducers,
