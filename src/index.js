@@ -2,10 +2,13 @@
 * @file index
 * @author Ice(ice.zjchen@gmail.com)
 */
-import * as utils from './utils';
+import * as allUtils from './utils';
 import apiMiddleware from './apiMiddleware';
+
+export const utils = allUtils;
+export const middlewares = { api: apiMiddleware };
 
 export default {
   utils,
-  middlewares: { api: apiMiddleware },
+  middlewares,
 };

@@ -29,22 +29,24 @@ export const createAsyncActonReducers = (actionType, successHandler = null, fail
     throw new Error('`actionType` is reqired string type for createAsyncActonReducers');
   }
 
+  const type = _.camelCase(actionType.split('/').pop());
+
   const requestReducer = (state, action) => Object.assign({}, state, {
-    [actionType]: {
-      isPending: true
-    }
+    [type]: {
+      isFetching: true,
+    },
   });
   const successReducer = (state, action) => Object.assign({}, state, {
-    [actionType]: {
-      isPending: false,
-      result: action.payload
-    }
+    [type]: {
+      isFetching: false,
+      result: action.payload,
+    },
   });
   const failureReducer = (state, action) => Object.assign({}, state, {
-    [actionType]: {
-      isPending: false,
-      error: action.error
-    }
+    [type]: {
+      isFetching: false,
+      error: action.error,
+    },
   });
 
   return {
