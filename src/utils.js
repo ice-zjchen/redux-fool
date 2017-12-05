@@ -6,11 +6,11 @@ import _ from 'lodash';
 import { createAction, handleActions } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
-export const mapActionHandlers = handleActions;
+const mapActionHandlers = handleActions;
 
-export const defineActionType = app => module => type => `${app}/${module}/${type}`;
+const defineActionType = app => module => type => `${app}/${module}/${type}`;
 
-export const makeActionCreator = (actionType, payload, meta = {}) => (
+const makeActionCreator = (actionType, payload, meta = {}) => (
   createAction(
     actionType,
     payload ? () => payload : updates => updates,
@@ -18,7 +18,7 @@ export const makeActionCreator = (actionType, payload, meta = {}) => (
   )
 );
 
-export const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
+const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
   createAction(
     actionType,
     payload => payload,
@@ -26,7 +26,7 @@ export const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
   )
 );
 
-export const createAsyncActonReducers = (
+const createAsyncActonReducers = (
   actionType,
   successHandler = null,
   failureHanlder = null,
@@ -60,4 +60,12 @@ export const createAsyncActonReducers = (
     [`${actionType}_${SUCCESS}`]: successHandler || successReducer,
     [`${actionType}_${FAILURE}`]: failureHanlder || failureReducer,
   };
+};
+
+export default {
+  mapActionHandlers,
+  defineActionType,
+  makeActionCreator,
+  makeAsyncActionCreator,
+  createAsyncActonReducers,
 };

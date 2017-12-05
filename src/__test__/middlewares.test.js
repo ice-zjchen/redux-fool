@@ -5,12 +5,12 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import test from 'ava';
-import apiMiddleware from '../apiMiddleware';
-import { makeAsyncActionCreator } from '../utils';
+import middlewares from '../middlewares';
+import utils from '../utils';
 import { REQUEST, SUCCESS, FAILURE } from '../constants';
 
-const middlewares = [thunk, apiMiddleware];
-const mockStore = configureMockStore(middlewares);
+const { makeAsyncActionCreator } = utils;
+const mockStore = configureMockStore([thunk, middlewares.callAPIMiddleware]);
 const actionType = 'CREATE_USER';
 
 test('`callAPI` is function', (t) => {

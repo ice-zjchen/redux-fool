@@ -4,7 +4,7 @@
 */
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
-export default function callAPIMiddleware({ dispatch, getState }) {
+function callAPIMiddleware({ dispatch, getState }) {
   return next => (action) => {
     const { type, payload = {} } = action;
     const { async = false, callAPI, shouldCallAPI = () => true } = action.meta || {};
@@ -56,3 +56,7 @@ export default function callAPIMiddleware({ dispatch, getState }) {
       ));
   };
 }
+
+export default {
+  callAPIMiddleware,
+};

@@ -5,7 +5,7 @@
 import _ from 'lodash';
 import test from 'ava';
 import { REQUEST, SUCCESS, FAILURE } from '../constants';
-import * as utils from '../utils';
+import utils from '../utils';
 
 test('`defineActionType` is ok', (t) => {
   const actionType = utils.defineActionType('app')('user')('GET_CURRENT_USER');
