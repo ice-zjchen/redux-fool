@@ -77,7 +77,6 @@ test('`createAsyncActonReducers` default handlers is ok', (t) => {
 test('`createAsyncActonReducers` custom handlers is ok', (t) => {
   t.plan(2);
 
-  const requestReducer = (state, action) => state;
   const success = () => true;
   const failure = () => false;
   const actionType = 'IMCREMNET';

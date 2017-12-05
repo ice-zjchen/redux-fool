@@ -28,7 +28,8 @@
     "test:watch": "ava --verbose --watch",
     "test": "nyc ava --verbose",
     "lint:fix": "eslint src --fix",
-    "prepublish": "npm run test && npm run build"
+    "lint": "eslint src",
+    "prepublish": "npm run lint && npm run test && npm run build"
   },
   "repository": {
     "type": "git",

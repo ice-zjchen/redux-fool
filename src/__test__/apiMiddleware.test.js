@@ -16,17 +16,17 @@ const actionType = 'CREATE_USER';
 test('`callAPI` is function', (t) => {
   const callAPI = '';
   const action = makeAsyncActionCreator(actionType, callAPI);
-  const error = t.throws(() => {
-    store.dispatch(action());
+  t.throws(() => {
+    mockStore.dispatch(action());
   }, Error);
 });
 
 test('`type` is string', (t) => {
   const type = () => {};
   const callAPI = () => {};
-  const action = makeAsyncActionCreator(actionType, callAPI);
-  const error = t.throws(() => {
-    store.dispatch(action());
+  const action = makeAsyncActionCreator(type, callAPI);
+  t.throws(() => {
+    mockStore.dispatch(action());
   }, Error);
 });
 
@@ -54,7 +54,8 @@ test('dispatch success action', async (t) => {
 
 test('dispatch failure action', async (t) => {
   const params = { userName: 'new user' };
-  const callAPI = data => Promise.resolve(data).then(res => Promise.reject({ result: res }));
+  const err = new Error('new error');
+  const callAPI = data => Promise.resolve(data).then(() => Promise.reject(err));
   const createUser = makeAsyncActionCreator(actionType, callAPI);
 
   const expectedActions = [{
@@ -63,8 +64,8 @@ test('dispatch failure action', async (t) => {
   },
   {
     type: `${actionType}_${FAILURE}`,
-    error: { result: params },
-    meta: { req: params, error: { result: params } },
+    error: err,
+    meta: { req: params, error: err },
   }];
 
   const store = mockStore({});

@@ -7,7 +7,7 @@ import { REQUEST, SUCCESS, FAILURE } from './constants';
 export default function callAPIMiddleware({ dispatch, getState }) {
   return next => (action) => {
     const { type, payload = {} } = action;
-    const { async = false, callAPI } = action.meta || {};
+    const { async = false, callAPI, shouldCallAPI = () => true } = action.meta || {};
 
     if (!async) {
       // Normal action: pass it on
@@ -22,9 +22,9 @@ export default function callAPIMiddleware({ dispatch, getState }) {
       throw new Error('Expected callAPI to be a function.');
     }
 
-    // if (!shouldCallAPI(getState())) {
-    //   return next(action);
-    // }
+    if (!shouldCallAPI(getState())) {
+      return next(action);
+    }
 
     const requestType = `${type}_${REQUEST}`;
     const successType = `${type}_${SUCCESS}`;

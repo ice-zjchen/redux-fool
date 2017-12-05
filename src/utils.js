@@ -8,30 +8,34 @@ import { REQUEST, SUCCESS, FAILURE } from './constants';
 
 export const defineActionType = app => module => type => `${app}/${module}/${type}`;
 
-export const makeActionCreator = (actionType, payload) => (
+export const makeActionCreator = (actionType, payload, meta = {}) => (
   createAction(
     actionType,
     payload ? () => payload : updates => updates,
-    () => ({ async: false }),
+    () => Object.assign({}, meta, { async: false }),
   )
 );
 
-export const makeAsyncActionCreator = (actionType, callAPI) => (
+export const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
   createAction(
     actionType,
     payload => payload,
-    () => ({ async: true, callAPI }),
+    () => Object.assign({}, meta, { async: true, callAPI }),
   )
 );
 
-export const createAsyncActonReducers = (actionType, successHandler = null, failureHanlder = null) => {
+export const createAsyncActonReducers = (
+  actionType,
+  successHandler = null,
+  failureHanlder = null,
+) => {
   if (!actionType || !_.isString(actionType)) {
     throw new Error('`actionType` is reqired string type for createAsyncActonReducers');
   }
 
   const type = _.camelCase(actionType.split('/').pop());
 
-  const requestReducer = (state, action) => Object.assign({}, state, {
+  const requestReducer = state => Object.assign({}, state, {
     [type]: {
       isFetching: true,
     },
