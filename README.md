@@ -87,22 +87,26 @@ const createTask = makeAsyncActionCreator(
 
 ##### reducers.js
 ```javascript
-import { handleActions } from 'redux-actions';
+import { utils as reduxFoolUtils } from 'redux-fool';
 import * as actionTypes from './actionTypes';
+
+const { mapActionHandlers } = reduxFoolUtils;
 
 const reducers = {
   ...createApiReducers(actionTypes.CREATE_TASK),
 };
 const initialState = {};
 
-export default handleActions(reducers, initialState);
+export default mapActionHandlers(reducers, initialState);
 ```
 ## Advanced Usage
 Of course, you can handle success action or failure action yourself. It's also allow you to operate any state object limited in ```MODULE``` scope, such as ```state.task.entities```.
 ##### reducers.js
 ```javascript
-import { handleActions } from 'redux-actions';
+import { utils as reduxFoolUtils } from 'redux-fool';
 import * as actionTypes from './actionTypes';
+
+const { mapActionHandlers } = reduxFoolUtils;
 
 const successHandler = (state, action) => {...};
 const failureHandler = (state, action) => {...};
@@ -111,4 +115,4 @@ const reducers = {
 };
 const initialState = {};
 
-export default handleActions(reducers, initialState);
+export default mapActionHandlers(reducers, initialState);
