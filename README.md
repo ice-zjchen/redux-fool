@@ -7,7 +7,7 @@ npm install redux-tool --save
 ## Quick Start
 ### Create an API action
 ##### store.js
-```
+```javascript
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { middlewares as reduxFoolMiddlwares } from 'redux-fool';
@@ -30,7 +30,7 @@ export default (initialState) => {
 ```
 
 ##### actionTypes.js
-```
+```javascript
 import { utils as reduxFoolUtils } from 'redux-fool';
 
 const { defineActionType } = reduxFoolUtils;
@@ -42,7 +42,7 @@ export const CREATE_TASK = task('CREATE_TASK');
 ```
 
 ##### actions.js
-```
+```javascript
 import { utils as reduxFoolUtils } from 'redux-fool';
 import * as actionTypes from './actionTypes';
 import request from './request';
@@ -56,7 +56,7 @@ const createTask = makeAsyncActionCreator(
 ```
 
 ##### reducers.js
-```
+```javascript
 import { handleActions } from 'redux-actions';
 import * as actionTypes from './actionTypes';
 
