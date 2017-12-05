@@ -1,6 +1,8 @@
 # redux-fool
 It is a very simple tool, even fool, to creating a async action for redux. 
 
+[![npm version](https://badge.fury.io/js/redux-fool.svg)](https://badge.fury.io/js/redux-fool)
+
 ## Install
 ```
 npm install redux-tool --save
