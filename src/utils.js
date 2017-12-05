@@ -3,8 +3,10 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
-import { createAction } from 'redux-actions';
+import { createAction, handleActions } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
+
+export const mapActionHandlers = handleActions;
 
 export const defineActionType = app => module => type => `${app}/${module}/${type}`;
 
