@@ -94,10 +94,10 @@ const createTask = makeAsyncActionCreator(
 import { utils as reduxFoolUtils } from 'redux-fool';
 import * as actionTypes from './actionTypes';
 
-const { mapActionHandlers } = reduxFoolUtils;
+const { mapActionHandlers, createAsyncActonReducers } = reduxFoolUtils;
 
 const reducers = {
-  ...createApiReducers(actionTypes.CREATE_TASK),
+  ...createAsyncActonReducers(actionTypes.CREATE_TASK),
 };
 const initialState = {};
 
@@ -110,12 +110,12 @@ Of course, you can handle success action or failure action yourself. It's also a
 import { utils as reduxFoolUtils } from 'redux-fool';
 import * as actionTypes from './actionTypes';
 
-const { mapActionHandlers } = reduxFoolUtils;
+const { mapActionHandlers, createAsyncActonReducers } = reduxFoolUtils;
 
 const successHandler = (state, action) => {...};
 const failureHandler = (state, action) => {...};
 const reducers = {
-  ...createApiReducers(actionTypes.CREATE_TASK, successHandler, failureHandler),
+  ...createAsyncActonReducers(actionTypes.CREATE_TASK, successHandler, failureHandler),
 };
 const initialState = {};
 
