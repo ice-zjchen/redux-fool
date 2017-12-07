@@ -52,20 +52,20 @@ test('`makeAsyncActionCreator` is ok', (t) => {
   t.deepEqual(action, expect);
 });
 
-test('actionType sholud be string type in `createAsyncActonReducers`', (t) => {
+test('actionType sholud be string type in `createAsyncActionReducers`', (t) => {
   t.plan(2);
 
-  const errMsg = '`actionType` is reqired string type for createAsyncActonReducers';
+  const errMsg = '`actionType` is reqired string type for createAsyncActionReducers';
   const error = t.throws(() => {
-    utils.createAsyncActonReducers();
+    utils.createAsyncActionReducers();
   }, Error);
 
   t.is(error.message, errMsg);
 });
 
-test('`createAsyncActonReducers` default handlers is ok', (t) => {
+test('`createAsyncActionReducers` default handlers is ok', (t) => {
   const actionType = 'IMCREMNET';
-  const reducers = utils.createAsyncActonReducers(actionType);
+  const reducers = utils.createAsyncActionReducers(actionType);
   const expect = [
     `${actionType}_${REQUEST}`,
     `${actionType}_${SUCCESS}`,
@@ -74,13 +74,13 @@ test('`createAsyncActonReducers` default handlers is ok', (t) => {
   t.deepEqual(_.keys(reducers), expect);
 });
 
-test('`createAsyncActonReducers` custom handlers is ok', (t) => {
+test('`createAsyncActionReducers` custom handlers is ok', (t) => {
   t.plan(2);
 
   const success = () => true;
   const failure = () => false;
   const actionType = 'IMCREMNET';
-  const reducers = utils.createAsyncActonReducers(actionType, success, failure);
+  const reducers = utils.createAsyncActionReducers(actionType, success, failure);
 
   t.is(reducers[`${actionType}_${SUCCESS}`], success);
   t.is(reducers[`${actionType}_${FAILURE}`], failure);

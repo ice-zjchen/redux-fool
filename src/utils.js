@@ -26,13 +26,13 @@ const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
   )
 );
 
-const createAsyncActonReducers = (
+const createAsyncActionReducers = (
   actionType,
   successHandler = null,
   failureHanlder = null,
 ) => {
   if (!actionType || !_.isString(actionType)) {
-    throw new Error('`actionType` is reqired string type for createAsyncActonReducers');
+    throw new Error('`actionType` is reqired string type for createAsyncActionReducers');
   }
 
   const type = _.camelCase(actionType.split('/').pop());
@@ -67,5 +67,5 @@ export default {
   defineActionType,
   makeActionCreator,
   makeAsyncActionCreator,
-  createAsyncActonReducers,
+  createAsyncActionReducers,
 };
