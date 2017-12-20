@@ -4,6 +4,8 @@
 # Output
 es
 lib
+dist
+.cache
 
 # Logs
 logs

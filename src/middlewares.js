@@ -22,7 +22,7 @@ function callAPIMiddleware({ dispatch, getState }) {
       throw new Error('Expected callAPI to be a function.');
     }
 
-    if (!shouldCallAPI(getState())) {
+    if (!shouldCallAPI(getState(), action)) {
       return next(action);
     }
 
