@@ -2,10 +2,23 @@
 * @file api middleware
 * @author Ice(ice.zjchen@gmail.com)
 */
+import _ from 'lodash';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
-function callAPIMiddleware({ dispatch, getState }) {
-  return next => (action) => {
+const createApiActionMeta = (params, data) => ({
+  arrivedAt: Date.now(),
+  params,
+  data,
+});
+
+const createApiActionErrorMeta = (params, error) => ({
+  arrivedAt: Date.now(),
+  params,
+  error: { message: error.message, ...error },
+});
+
+function callAPIMiddleware({ apiDataPath = null }) {
+  return ({ dispatch, getState }) => next => (action) => {
     const { type, payload = {} } = action;
     const { async = false, callAPI, shouldCallAPI = () => true } = action.meta || {};
 
@@ -38,20 +51,17 @@ function callAPIMiddleware({ dispatch, getState }) {
       .then(response => (
         dispatch(Object.assign({}, {
           type: successType,
-          payload: response,
-          meta: {
-            req: payload,
-            res: response,
-          },
+          payload: !apiDataPath ? response : _.get(response, apiDataPath),
+          meta: createApiActionMeta(
+            payload,
+            !apiDataPath ? response : _.get(response, apiDataPath),
+          ),
         }))
       )).catch(error => (
         dispatch(Object.assign({}, {
           type: failureType,
           error,
-          meta: {
-            req: payload,
-            error,
-          },
+          meta: createApiActionErrorMeta(payload, error),
         }))
       ));
   };

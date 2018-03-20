@@ -10,7 +10,7 @@ import utils from '../utils';
 import { REQUEST, SUCCESS, FAILURE } from '../constants';
 
 const { makeAsyncActionCreator } = utils;
-const mockStore = configureMockStore([thunk, middlewares.callAPIMiddleware]);
+const mockStore = configureMockStore([thunk, middlewares.callAPIMiddleware({ apiDataPath: 'result' })]);
 const actionType = 'CREATE_USER';
 
 test('`callAPI` is function', (t) => {
@@ -32,7 +32,8 @@ test('`type` is string', (t) => {
 
 test('dispatch success action', async (t) => {
   const params = { userName: 'new user' };
-  const callAPI = data => Promise.resolve(data).then(res => ({ result: res }));
+  const data = { userId: '007' };
+  const callAPI = query => Promise.resolve(query).then(() => ({ result: data }));
   const createUser = makeAsyncActionCreator(actionType, callAPI);
 
   const expectedActions = [{
@@ -41,21 +42,23 @@ test('dispatch success action', async (t) => {
   },
   {
     type: `${actionType}_${SUCCESS}`,
-    payload: { result: params },
-    meta: { req: params, res: { result: params } },
+    payload: data,
+    meta: { params, data },
   }];
 
   const store = mockStore({});
   await store.dispatch(createUser(params));
 
-  t.deepEqual(store.getActions(), expectedActions);
-});
+  const actions = store.getActions();
+  delete actions[1].meta.arrivedAt;
 
+  t.deepEqual(actions, expectedActions);
+});
 
 test('dispatch failure action', async (t) => {
   const params = { userName: 'new user' };
-  const err = new Error('new error');
-  const callAPI = data => Promise.resolve(data).then(() => Promise.reject(err));
+  const error = new Error('new error');
+  const callAPI = query => Promise.resolve(query).then(() => Promise.reject(error));
   const createUser = makeAsyncActionCreator(actionType, callAPI);
 
   const expectedActions = [{
@@ -64,12 +67,15 @@ test('dispatch failure action', async (t) => {
   },
   {
     type: `${actionType}_${FAILURE}`,
-    error: err,
-    meta: { req: params, error: err },
+    error,
+    meta: { params, error: { message: error.message, ...error } },
   }];
 
   const store = mockStore({});
   await store.dispatch(createUser(params));
 
-  t.deepEqual(store.getActions(), expectedActions);
+  const actions = store.getActions();
+  delete actions[1].meta.arrivedAt;
+
+  t.deepEqual(actions, expectedActions);
 });

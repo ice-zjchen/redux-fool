@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { middlewares as reduxFoolMiddlwares } from 'redux-fool';
+import { middlewares as reduxFoolMiddlwares } from '../../src';
 
 import reducers from './reducers';
 

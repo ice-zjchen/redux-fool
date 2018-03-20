@@ -85,3 +85,92 @@ test('`createAsyncActionReducers` custom handlers is ok', (t) => {
   t.is(reducers[`${actionType}_${SUCCESS}`], success);
   t.is(reducers[`${actionType}_${FAILURE}`], failure);
 });
+
+
+test('state is ok after default reducer call', (t) => {
+  t.plan(4);
+
+  const actionType = 'IMCREMNET';
+  const params = { count: 1 };
+  const params1 = { count: 2 };
+  const data = { total: 2 };
+  const error = new Error('no error');
+  const reducers = utils.createAsyncActionReducers(actionType);
+
+  const initState = {};
+  const action0 = {
+    type: `${actionType}_${REQUEST}`,
+    payload: params,
+  };
+
+  const action1 = {
+    type: `${actionType}_${SUCCESS}`,
+    payload: { data },
+    meta: { params, data },
+  };
+
+  const action2 = {
+    type: `${actionType}_${REQUEST}`,
+    payload: params1,
+  };
+
+  const action3 = {
+    type: `${actionType}_${FAILURE}`,
+    payload: { error },
+    meta: { params: params1, error },
+  };
+
+  const state0 = {
+    imcremnet: {
+      '{"count":1}': {
+        pendingMutex: 1,
+      },
+    },
+  };
+
+  const state1 = {
+    imcremnet: {
+      '{"count":1}': {
+        pendingMutex: 0,
+        response: { params, data },
+      },
+    },
+  };
+
+  const state2 = {
+    imcremnet: {
+      '{"count":1}': {
+        pendingMutex: 0,
+        response: { params, data },
+      },
+      '{"count":2}': {
+        pendingMutex: 1,
+      },
+    },
+  };
+
+  const state3 = {
+    imcremnet: {
+      '{"count":1}': {
+        pendingMutex: 0,
+        response: { params, data },
+      },
+      '{"count":2}': {
+        pendingMutex: 0,
+        response: { params: params1, error },
+      },
+    },
+  };
+
+  let state = reducers[`${actionType}_${REQUEST}`](initState, action0);
+  t.deepEqual(state, state0);
+
+  state = reducers[`${actionType}_${SUCCESS}`](state, action1);
+  t.deepEqual(state, state1);
+
+  state = reducers[`${actionType}_${REQUEST}`](state, action2);
+  t.deepEqual(state, state2);
+
+  state = reducers[`${actionType}_${FAILURE}`](state, action3);
+  t.deepEqual(state, state3);
+});

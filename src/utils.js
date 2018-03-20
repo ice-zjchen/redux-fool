@@ -3,6 +3,7 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
+import { set } from 'san-update';
 import { createAction, handleActions } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
@@ -26,6 +27,37 @@ const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
   )
 );
 
+const reduceApiCallBy = reduceState => (state = {}, action) => {
+  const stage = action.type.split('_').pop();
+
+  const pendingMutexAddition = {
+    [REQUEST]: 1,
+    [SUCCESS]: -1,
+    [FAILURE]: -1,
+  };
+
+  const cacheKey = JSON.stringify(stage === REQUEST ? action.payload : action.meta.params);
+  const cacheItem = state[cacheKey] || { pendingMutex: 0 };
+
+  const nextPendingMutex = cacheItem.pendingMutex + pendingMutexAddition[stage];
+  const newItem = nextPendingMutex === cacheItem.pendingMutex
+    ? cacheItem
+    : { ...cacheItem, pendingMutex: nextPendingMutex };
+
+  return {
+    ...state,
+    [cacheKey]: reduceState(newItem, stage, action.meta),
+  };
+};
+
+const alwaysOverride = (item, stage, response) => {
+  if (stage === SUCCESS || stage === FAILURE) {
+    return { ...item, response };
+  }
+
+  return item;
+};
+
 const createAsyncActionReducers = (
   actionType,
   successHandler = null,
@@ -37,28 +69,16 @@ const createAsyncActionReducers = (
 
   const type = _.camelCase(actionType.split('/').pop());
 
-  const requestReducer = state => Object.assign({}, state, {
-    [type]: {
-      isFetching: true,
-    },
-  });
-  const successReducer = (state, action) => Object.assign({}, state, {
-    [type]: {
-      isFetching: false,
-      result: action.payload,
-    },
-  });
-  const failureReducer = (state, action) => Object.assign({}, state, {
-    [type]: {
-      isFetching: false,
-      error: action.error,
-    },
-  });
+  const defaultReducer = (state = {}, action) => set(
+    state,
+    type,
+    reduceApiCallBy(alwaysOverride)(state[type], action),
+  );
 
   return {
-    [`${actionType}_${REQUEST}`]: requestReducer,
-    [`${actionType}_${SUCCESS}`]: successHandler || successReducer,
-    [`${actionType}_${FAILURE}`]: failureHanlder || failureReducer,
+    [`${actionType}_${REQUEST}`]: defaultReducer,
+    [`${actionType}_${SUCCESS}`]: successHandler || defaultReducer,
+    [`${actionType}_${FAILURE}`]: failureHanlder || defaultReducer,
   };
 };
 
