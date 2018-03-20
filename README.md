@@ -17,22 +17,71 @@ By default, one action maps one object in state.
 {
   "moduleName": {
     "actionName": {
-      "isFetching": false,
-      "result": {},
-      "error": {}
+      "query": {
+        "pendingMetux": 0,
+        "response": {
+          "params": {},
+          "data": {},
+          "error": {}
+        }
+      }
     }
   }
 }
 ```
 
 For example, In the ```task``` business module, If you create an api action named ``` CREATE_USER ```, the middleware will dispatch ``` CREATE_USER_REQUEST ```, ``` CREATE_USER_SUCCESS ``` or ``` CREATE_USER_FAILURE ```. Then default reducers update the ```createUser``` (camelCase of ```CREATE_USER```) in state.
+
+a. dispacth **REQUEST**
 ```json
 {
   "task": {
     "createTask": {
-      "isFetching": false,
-      "result": {},
-      "error": {}
+      "{\"taskName\":\"take a rest\"}": {
+        "pendingMetux": 1
+      }
+    }
+  }
+}
+```
+
+b1. dispatch **SUCCESS**
+```json
+{
+  "task": {
+    "createTask": {
+      "{\"taskName\":\"take a rest\"}": {
+        "pendingMetux": 0,
+        "response": {
+          "params": {
+            "taskName": "take a rest"
+          },
+          "data": {
+            "taskId": "xxxx-xxxx-xxxx-xxxx"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+b2. dispatch **FALIURE**
+```json
+{
+  "task": {
+    "createTask": {
+      "{\"taskName\":\"take a rest\"}": {
+        "pendingMetux": 0,
+        "response": {
+          "params": {
+            "taskName": "take a rest"
+          },
+          "error": {
+            "message": "Access Denied"
+          }
+        }
+      }
     }
   }
 }
