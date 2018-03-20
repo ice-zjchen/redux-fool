@@ -1,5 +1,5 @@
 
-import { utils } from 'redux-fool';
+import { utils } from '../../src';
 import * as actionTypes from './actionTypes';
 
 const { handleActions, createAsyncActonReducers } = utils;

@@ -4,10 +4,10 @@ import { middlewares as reduxFoolMiddlwares } from '../../src';
 
 import reducers from './reducers';
 
-const apiMiddleware = reduxFoolMiddlwares.api;
+const { callAPIMiddleware } = reduxFoolMiddlwares;
 
 export default (initialState) => {
-  const applyMiddlewareFunc = applyMiddleware(thunk, apiMiddleware);
+  const applyMiddlewareFunc = applyMiddleware(thunk, callAPIMiddleware());
 
   const store = createStore(
     reducers,
