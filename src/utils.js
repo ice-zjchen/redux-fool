@@ -3,7 +3,7 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
-import { set } from 'san-update';
+import { set, immutable } from 'san-update';
 import { createAction, handleActions } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
@@ -75,8 +75,15 @@ const createAsyncActionReducers = (
     reduceApiCallBy(alwaysOverride)(state[type], action),
   );
 
+  const requestReducer = (state = {}, action) => (
+    immutable(state)
+      .set(type, reduceApiCallBy(alwaysOverride)(state[type], action))
+      .set(`${type}Params`, action.payload)
+      .value()
+  );
+
   return {
-    [`${actionType}_${REQUEST}`]: defaultReducer,
+    [`${actionType}_${REQUEST}`]: requestReducer,
     [`${actionType}_${SUCCESS}`]: successHandler || defaultReducer,
     [`${actionType}_${FAILURE}`]: failureHanlder || defaultReducer,
   };

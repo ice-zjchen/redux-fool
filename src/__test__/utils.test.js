@@ -126,6 +126,9 @@ test('state is ok after default reducer call', (t) => {
         pendingMutex: 1,
       },
     },
+    imcremnetParams: {
+      count: 1,
+    },
   };
 
   const state1 = {
@@ -134,6 +137,9 @@ test('state is ok after default reducer call', (t) => {
         pendingMutex: 0,
         response: { params, data },
       },
+    },
+    imcremnetParams: {
+      count: 1,
     },
   };
 
@@ -147,6 +153,9 @@ test('state is ok after default reducer call', (t) => {
         pendingMutex: 1,
       },
     },
+    imcremnetParams: {
+      count: 2,
+    },
   };
 
   const state3 = {
@@ -159,6 +168,9 @@ test('state is ok after default reducer call', (t) => {
         pendingMutex: 0,
         response: { params: params1, error },
       },
+    },
+    imcremnetParams: {
+      count: 2,
     },
   };
 
