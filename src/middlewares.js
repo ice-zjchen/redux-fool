@@ -18,7 +18,7 @@ const createApiActionErrorMeta = (params, error) => ({
 });
 
 function callAPIMiddleware(opts) {
-  const { apiDataPath = null } = opts;
+  const apiDataPath = opts ? opts.apiDataPath : null;
   return ({ dispatch, getState }) => next => (action) => {
     const { type, payload = {} } = action;
     const { async = false, callAPI, shouldCallAPI = () => true } = action.meta || {};
