@@ -4,9 +4,11 @@
 */
 import _ from 'lodash';
 import { set, immutable } from 'san-update';
+import { createSelector } from 'reselect';
 import { createAction, handleActions } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
 
+// actions utils
 const mapActionHandlers = handleActions;
 
 const defineActionType = app => module => type => `${app}/${module}/${type}`;
@@ -27,6 +29,7 @@ const makeAsyncActionCreator = (actionType, callAPI, meta = {}) => (
   )
 );
 
+// reducer utils
 const reduceApiCallBy = reduceState => (state = {}, action) => {
   const stage = action.type.split('_').pop();
 
@@ -89,10 +92,39 @@ const createAsyncActionReducers = (
   };
 };
 
+// selector utils
+const createAsyncActionSelector = (actionName, actionParams) => createSelector(
+  [actionName, actionParams],
+  (name, params) => {
+    const paramsKey = JSON.stringify(params);
+    return name[paramsKey];
+  },
+);
+
+const get = name => source => (source == null ? source : source[name]);
+
+const createAsyncActionResponseSelector = (actionName, actionParams) => createSelector(
+  [createAsyncActionSelector(actionName, actionParams)],
+  get('response'),
+);
+
+const createAsyncActionDataSelector = (actionName, actionParams) => createSelector(
+  [createAsyncActionResponseSelector(actionName, actionParams)],
+  get('data'),
+);
+
+const createAsyncActionErrorSelector = (actionName, actionParams) => createSelector(
+  [createAsyncActionResponseSelector(actionName, actionParams)],
+  get('error'),
+);
+
 export default {
   mapActionHandlers,
   defineActionType,
   makeActionCreator,
   makeAsyncActionCreator,
   createAsyncActionReducers,
+  createAsyncActionResponseSelector,
+  createAsyncActionDataSelector,
+  createAsyncActionErrorSelector,
 };
