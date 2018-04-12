@@ -21,7 +21,12 @@ function callAPIMiddleware(opts) {
   const apiDataPath = opts ? opts.apiDataPath : null;
   return ({ dispatch, getState }) => next => (action) => {
     const { type, payload = {} } = action;
-    const { async = false, callAPI, shouldCallAPI = () => true } = action.meta || {};
+    const {
+      async = false,
+      callAPI,
+      shouldCallAPI = () => true,
+      computeParams = params => params,
+    } = action.meta || {};
 
     if (!async) {
       // Normal action: pass it on
@@ -54,7 +59,7 @@ function callAPIMiddleware(opts) {
           type: successType,
           payload: !apiDataPath ? response : _.get(response, apiDataPath),
           meta: createApiActionMeta(
-            payload,
+            computeParams(payload),
             !apiDataPath ? response : _.get(response, apiDataPath),
           ),
         }))
@@ -62,7 +67,7 @@ function callAPIMiddleware(opts) {
         dispatch(Object.assign({}, {
           type: failureType,
           error,
-          meta: createApiActionErrorMeta(payload, error),
+          meta: createApiActionErrorMeta(computeParams(payload), error),
         }))
       ));
   };

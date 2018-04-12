@@ -39,7 +39,7 @@ const reduceApiCallBy = reduceState => (state = {}, action) => {
     [FAILURE]: -1,
   };
 
-  const cacheKey = JSON.stringify(stage === REQUEST ? action.payload : action.meta.params);
+  const cacheKey = JSON.stringify(stage === REQUEST ? action.payload : action.meta.params) || 'ALL';
   const cacheItem = state[cacheKey] || { pendingMutex: 0 };
 
   const nextPendingMutex = cacheItem.pendingMutex + pendingMutexAddition[stage];
