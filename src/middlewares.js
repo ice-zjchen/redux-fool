@@ -3,7 +3,7 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
-import { REQUEST, SUCCESS, FAILURE } from './constants';
+import { REQUEST, SUCCESS, FAILURE, UPDATE_ENTITY_TABLE } from './constants';
 
 const createApiActionMeta = (params, data) => ({
   arrivedAt: Date.now(),
@@ -26,6 +26,7 @@ function callAPIMiddleware(opts) {
       callAPI,
       shouldCallAPI = () => true,
       computeParams = params => params,
+      withTableUpdate = {},
     } = action.meta || {};
 
     if (!async) {
@@ -55,20 +56,23 @@ function callAPIMiddleware(opts) {
 
     return callAPI(payload)
       .then((response) => {
+        const res = !apiDataPath ? response : _.get(response, apiDataPath);
         dispatch(Object.assign({}, {
           type: successType,
-          payload: !apiDataPath ? response : _.get(response, apiDataPath),
+          payload: res,
           meta: createApiActionMeta(
             computeParams(payload),
-            !apiDataPath ? response : _.get(response, apiDataPath),
+            res,
           ),
         }));
 
-        if (action.meta.withTableUpdate) {
+        if (_.has(withTableUpdate, 'tableName') && _.has(withTableUpdate, 'selectEntities')) {
           dispatch(Object.assign({}, {
-            type: '@@redux-fool/ENTITIES_TABLE_UPDATE',
-            payload: !apiDataPath ? response : _.get(response, apiDataPath),
-            meta: { withTableUpdate: action.meta.withTableUpdate },
+            type: UPDATE_ENTITY_TABLE,
+            payload: {
+              tableName: withTableUpdate.tableName,
+              entities: withTableUpdate.selectEntities(res),
+            },
           }));
         }
       })
