@@ -7,6 +7,7 @@ import { set, immutable } from 'san-update';
 import { createSelector } from 'reselect';
 import { createAction, handleActions } from 'redux-actions';
 import { REQUEST, SUCCESS, FAILURE } from './constants';
+import entities from './entities';
 
 // actions utils
 const mapActionHandlers = handleActions;
@@ -127,4 +128,5 @@ export default {
   createAsyncActionResponseSelector,
   createAsyncActionDataSelector,
   createAsyncActionErrorSelector,
+  ...entities,
 };

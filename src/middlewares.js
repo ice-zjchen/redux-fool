@@ -54,7 +54,7 @@ function callAPIMiddleware(opts) {
     }));
 
     return callAPI(payload)
-      .then(response => (
+      .then((response) => {
         dispatch(Object.assign({}, {
           type: successType,
           payload: !apiDataPath ? response : _.get(response, apiDataPath),
@@ -62,8 +62,17 @@ function callAPIMiddleware(opts) {
             computeParams(payload),
             !apiDataPath ? response : _.get(response, apiDataPath),
           ),
-        }))
-      )).catch(error => (
+        }));
+
+        if (action.meta.withTableUpdate) {
+          dispatch(Object.assign({}, {
+            type: '@@redux-fool/ENTITIES_TABLE_UPDATE',
+            payload: !apiDataPath ? response : _.get(response, apiDataPath),
+            meta: { withTableUpdate: action.meta.withTableUpdate },
+          }));
+        }
+      })
+      .catch(error => (
         dispatch(Object.assign({}, {
           type: failureType,
           error,
