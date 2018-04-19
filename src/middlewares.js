@@ -77,13 +77,14 @@ function callAPIMiddleware(opts) {
           ),
         }));
       })
-      .catch(error => (
+      .catch((error) => {
         dispatch(Object.assign({}, {
           type: failureType,
           error,
           meta: createApiActionErrorMeta(computeParams(payload), error),
-        }))
-      ));
+        }));
+        throw error;
+      });
   };
 }
 
