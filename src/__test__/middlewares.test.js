@@ -72,10 +72,12 @@ test('dispatch failure action', async (t) => {
   }];
 
   const store = mockStore({});
-  await store.dispatch(createUser(params));
+  try {
+    await store.dispatch(createUser(params));
+  } catch (err) {
+    const actions = store.getActions();
+    delete actions[1].meta.arrivedAt;
 
-  const actions = store.getActions();
-  delete actions[1].meta.arrivedAt;
-
-  t.deepEqual(actions, expectedActions);
+    t.deepEqual(actions, expectedActions);
+  }
 });
