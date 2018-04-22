@@ -75,13 +75,15 @@ test('`createAsyncActionReducers` default handlers is ok', (t) => {
 });
 
 test('`createAsyncActionReducers` custom handlers is ok', (t) => {
-  t.plan(2);
+  t.plan(3);
 
+  const request = () => null;
   const success = () => true;
   const failure = () => false;
   const actionType = 'IMCREMNET';
-  const reducers = utils.createAsyncActionReducers(actionType, success, failure);
+  const reducers = utils.createAsyncActionReducers(actionType, request, success, failure);
 
+  t.is(reducers[`${actionType}_${REQUEST}`], request);
   t.is(reducers[`${actionType}_${SUCCESS}`], success);
   t.is(reducers[`${actionType}_${FAILURE}`], failure);
 });

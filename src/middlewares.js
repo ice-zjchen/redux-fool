@@ -50,8 +50,9 @@ function callAPIMiddleware(opts) {
     const successType = `${type}_${SUCCESS}`;
     const failureType = `${type}_${FAILURE}`;
 
-    dispatch(Object.assign({}, { payload }, {
+    dispatch(Object.assign({}, {
       type: requestType,
+      payload: computeParams(payload),
     }));
 
     return callAPI(payload)

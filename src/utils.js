@@ -64,6 +64,7 @@ const alwaysOverride = (item, stage, response) => {
 
 const createAsyncActionReducers = (
   actionType,
+  requestHandler = null,
   successHandler = null,
   failureHanlder = null,
 ) => {
@@ -87,7 +88,7 @@ const createAsyncActionReducers = (
   );
 
   return {
-    [`${actionType}_${REQUEST}`]: requestReducer,
+    [`${actionType}_${REQUEST}`]: requestHandler || requestReducer,
     [`${actionType}_${SUCCESS}`]: successHandler || defaultReducer,
     [`${actionType}_${FAILURE}`]: failureHanlder || defaultReducer,
   };
