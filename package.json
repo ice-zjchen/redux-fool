@@ -1,6 +1,6 @@
 {
   "name": "redux-fool",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Simple utils and middlewares for Redux.",
   "main": "lib/index.js",
   "module": "es/index.js",
