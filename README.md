@@ -169,3 +169,4 @@ const reducers = {
 const initialState = {};
 
 export default mapActionHandlers(reducers, initialState);
+```

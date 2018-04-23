@@ -11,6 +11,11 @@ const reduce = (object, iteratee, initialValue) => {
   return keys.reduce((result, key) => iteratee(result, object[key], key), initialValue);
 };
 
+/**
+ * 请求结果在store中序列化的reducer，配合action中withTableUpdate配置使用
+ *
+ * @param {Function} nextReducer 后续处理的reducer
+ */
 const createTableUpdateReducer = (nextReducer = s => s) => (state = {}, action) => {
   if (action.type !== UPDATE_ENTITY_TABLE) {
     return nextReducer(state, action);
