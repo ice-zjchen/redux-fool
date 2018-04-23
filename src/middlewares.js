@@ -59,15 +59,6 @@ function callAPIMiddleware(opts) {
       .then((response) => {
         const res = !apiDataPath ? response : _.get(response, apiDataPath);
 
-        dispatch(Object.assign({}, {
-          type: successType,
-          payload: res,
-          meta: createApiActionMeta(
-            computeParams(payload),
-            res,
-          ),
-        }));
-
         if (_.has(withTableUpdate, 'tableName') && _.has(withTableUpdate, 'selectEntities')) {
           dispatch(Object.assign({}, {
             type: UPDATE_ENTITY_TABLE,
@@ -78,7 +69,14 @@ function callAPIMiddleware(opts) {
           }));
         }
 
-        return res;
+        return dispatch(Object.assign({}, {
+          type: successType,
+          payload: res,
+          meta: createApiActionMeta(
+            computeParams(payload),
+            res,
+          ),
+        }));
       })
       .catch((error) => {
         dispatch(Object.assign({}, {
@@ -86,6 +84,7 @@ function callAPIMiddleware(opts) {
           error,
           meta: createApiActionErrorMeta(computeParams(payload), error),
         }));
+
         throw error;
       });
   };
