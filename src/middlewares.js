@@ -116,6 +116,7 @@ function callAPIMiddleware(opts) {
     };
 
     const handleError = (error) => {
+      removeCachedPromise();
       dispatch(Object.assign({}, {
         type: failureType,
         error,
