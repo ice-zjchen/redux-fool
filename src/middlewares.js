@@ -138,6 +138,4 @@ function callAPIMiddleware(opts) {
   };
 }
 
-export default {
-  callAPIMiddleware,
-};
+export default callAPIMiddleware;

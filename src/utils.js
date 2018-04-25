@@ -158,7 +158,7 @@ const createAsyncActionSelector = (actionName, actionParams) => createSelector(
   [actionName, actionParams],
   (name, params) => {
     const paramsKey = JSON.stringify(params);
-    return name[paramsKey];
+    return name ? name[paramsKey] : null;
   },
 );
 
