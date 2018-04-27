@@ -3,6 +3,7 @@
 [![npm version](https://badge.fury.io/js/redux-fool.svg)](https://badge.fury.io/js/redux-fool)
 
 **New APIs and Breaking Changes in v0.4.**
+
 You can use compatibile [v0.3.x](https://github.com/ice-zjchen/redux-fool/tree/0.3.4) which supports customized reducers and state design.
 
 
