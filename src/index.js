@@ -3,6 +3,7 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
+import { withDiff } from 'san-update';
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
 
@@ -73,6 +74,24 @@ const createModelAction = (appName, modelName, model, store) => {
   return actions;
 };
 
+export const mergeReducers = (target, source) => {
+  const reducers = _.reduce(source, (final, current, modelName) => {
+    // san-update 浅合并
+    const [merged, diff] = withDiff(final, { [modelName]: { $merge: current } });
+
+    // 不允许相同命名的reducer，如果存在则抛出异常
+    const d = _.keys(_.pickBy(diff[modelName], r => r.$change === 'change'));
+
+    if (d.length) {
+      throw new Error(`duplicate declaration of action \`${d[0]}\` in \`${modelName}\` scope`);
+    }
+
+    return merged;
+  }, target);
+
+  return reducers;
+};
+
 const configureStore = (initialState, rootReducer, middlewares = []) => {
   let applyMiddlewareFunc = applyMiddleware(thunk, callAPIMiddleware());
 
@@ -96,13 +115,15 @@ function init(opts) {
     state = {},
     models,
     middlewares,
+    reducers = {},
   } = opts;
 
   if (!models) {
     throw new Error('`models` is a required property');
   }
 
-  const rootReducer = createRootReducer(name, models);
+  let rootReducer = createRootReducer(name, models);
+  rootReducer = mergeReducers(rootReducer, reducers);
 
   const store = configureStore(state, rootReducer, middlewares);
 
