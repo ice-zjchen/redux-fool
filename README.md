@@ -2,9 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/redux-fool.svg)](https://badge.fury.io/js/redux-fool)
 
-**New APIs and Breaking Changes in v0.4.**
+**New APIs in v0.4.**
 
-You can use compatibile [v0.3.x](https://github.com/ice-zjchen/redux-fool/tree/0.3.4) which supports customized reducers and state design.
+It is compatibile with [v0.3.x](https://github.com/ice-zjchen/redux-fool/tree/0.3.4) action/reducer declaration.
 
 
 ## Install
@@ -27,11 +27,18 @@ import { Provider } from 'react-redux';
 import { init } from 'redux-fool';
 
 import todo from './models/todo';
+import todoReducers from './reducers/todo';
 
 const models = { todo };
+
+// compatible with v0.3
+const reducers = { todo: todoReducers };
+
 const store = init({
+  name: 'myApp',
   models,
-  middlewares: window.__REDUX_DEVTOOLS_EXTENSION__ ? [window.__REDUX_DEVTOOLS_EXTENSION__()] : null
+  middlewares: window.__REDUX_DEVTOOLS_EXTENSION__ ? [window.__REDUX_DEVTOOLS_EXTENSION__()] : null,
+  reducers,
 });
 
 const Root = (
@@ -89,6 +96,8 @@ export default todo;
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import todoActions from './actions/todo';
+
 class List extends Component {
     retrieveTodos = () => {
         // dispatch action
@@ -105,7 +114,10 @@ class List extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = dispatch => ({
-    actions: dispatch.todo  // actions in `dispatch` object
+    actions: {
+        ...dispatch.todo,  // actions in `dispatch` object
+        ...todoActions  // compatible with v0.3
+    }
 });
 
 export default connect(
