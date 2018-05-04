@@ -3,7 +3,6 @@
 * @author Ice(ice.zjchen@gmail.com)
 */
 import _ from 'lodash';
-import { withDiff } from 'san-update';
 import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 import thunk from 'redux-thunk';
 
@@ -35,8 +34,27 @@ const createModelReducer = (genActionType, model) => {
   return mapActionHandlers({ ...asyncReducers, ...syncReducers }, model.state);
 };
 
-const createRootReducer = (name, models) => {
-  const allReducer = {
+export const mergeReducers = (target, source) => {
+  const targetModelNames = _.keys(target);
+  const sourceModelNames = _.keys(source);
+
+  // 不允许有相同的model名字的情况
+  const conflict = _.filter(sourceModelNames, name => (
+    _.includes(targetModelNames, name)
+  ));
+
+  if (conflict.length) {
+    throw new Error(`duplicate declaration of model scope \`${conflict[0]}\``);
+  }
+
+  return {
+    ...target,
+    ...source,
+  };
+};
+
+const createRootReducer = (name, models, reducers) => {
+  let allReducer = {
     entities: createTableUpdateReducer(),
   };
 
@@ -47,6 +65,7 @@ const createRootReducer = (name, models) => {
     // 生成reducers
     allReducer[modelName] = createModelReducer(genActionType, model);
   });
+  allReducer = mergeReducers(allReducer, reducers);
 
   return combineReducers(allReducer);
 };
@@ -74,33 +93,20 @@ const createModelAction = (appName, modelName, model, store) => {
   return actions;
 };
 
-export const mergeReducers = (target, source) => {
-  const reducers = _.reduce(source, (final, current, modelName) => {
-    // san-update 浅合并
-    const [merged, diff] = withDiff(final, { [modelName]: { $merge: current } });
-
-    // 不允许相同命名的reducer，如果存在则抛出异常
-    const d = _.keys(_.pickBy(diff[modelName], r => r.$change === 'change'));
-
-    if (d.length) {
-      throw new Error(`duplicate declaration of action \`${d[0]}\` in \`${modelName}\` scope`);
-    }
-
-    return merged;
-  }, target);
-
-  return reducers;
-};
-
 const configureStore = (initialState, rootReducer, middlewares = []) => {
-  let applyMiddlewareFunc = applyMiddleware(thunk, callAPIMiddleware());
+  let applyMiddlewareFunc = applyMiddleware(thunk, callAPIMiddleware(), ...middlewares);
 
-  if (middlewares) {
+  // 暂时允许一直开启dev-tool
+  // if (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION__) {
+
+  /* eslint-disable */
+  if (window.__REDUX_DEVTOOLS_EXTENSION__) {
     applyMiddlewareFunc = compose(
       applyMiddlewareFunc,
-      ...middlewares,
+      window.__REDUX_DEVTOOLS_EXTENSION__()
     );
   }
+  /* eslint-enable */
 
   return createStore(
     rootReducer,
@@ -122,8 +128,7 @@ function init(opts) {
     throw new Error('`models` is a required property');
   }
 
-  let rootReducer = createRootReducer(name, models);
-  rootReducer = mergeReducers(rootReducer, reducers);
+  const rootReducer = createRootReducer(name, models, reducers);
 
   const store = configureStore(state, rootReducer, middlewares);
 

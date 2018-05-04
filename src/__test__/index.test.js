@@ -25,9 +25,6 @@ test('throw error in `mergeReducers` is ok', (t) => {
 
 test('throw error in `mergeReducers` is ok', (t) => {
   const target = {
-    user: {
-      getUserDetail: () => {},
-    },
     leads: {},
   };
   const source = {
@@ -40,7 +37,6 @@ test('throw error in `mergeReducers` is ok', (t) => {
   const expect = {
     user: {
       getUserList: () => {},
-      getUserDetail: () => {},
     },
     leads: {},
     task: {},

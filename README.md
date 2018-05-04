@@ -37,7 +37,6 @@ const reducers = { todo: todoReducers };
 const store = init({
   name: 'myApp',
   models,
-  middlewares: window.__REDUX_DEVTOOLS_EXTENSION__ ? [window.__REDUX_DEVTOOLS_EXTENSION__()] : null,
   reducers,
 });
 
